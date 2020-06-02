@@ -1,0 +1,12 @@
+{{- if .Values.logrotate.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "syslog-ng.labels" . | nindent 4 }}
+  name: {{ include "syslog-ng.fullname" . }}-crontab
+data:
+  crontab: |
+    {{ .Values.logrotate.cron_frecuency }} /usr/sbin/logrotate --state /var/log/cronlog.log
+  #end
+{{- end }}

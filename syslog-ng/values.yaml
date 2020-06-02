@@ -13,7 +13,7 @@ image:
 
 config: |
   @version: 3.27
-  @include "scl.conf"
+  #@include "scl.conf"
 
   log {
   	source {
@@ -24,11 +24,21 @@ config: |
 
 storage:
   enable: True
-  storageClass: netapp
-  size: 200Gi
+  storageClass: hostpath
+  size: 1Gi
 
+# enable logrotate. Only makes sense when enable storage ;)
 logrotate:
-  enable: false
+  enable: true
+  cron_frecuency: "* * * * *"
+  config: |
+    /var/log/syslog {
+      hourly
+      missingok
+      rotate 24
+      compress
+      create
+    }
 
 imagePullSecrets: []
 nameOverride: ""

@@ -24,7 +24,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -46,30 +45,42 @@ spec:
           - mountPath: /var/log
             name: logs
         {{- end }}
-  ###
         {{- if .Values.logrotate.enable }}
-          - name: logrotate
-            securityContext:
-              {{- toYaml .Values.securityContext | nindent 12 }}
-            image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-            imagePullPolicy: {{ .Values.image.pullPolicy }}
-            command:
-              -"/bin/logrotate"
-              -"--help"
-            volumeMounts:
-            - mountPath: /etc/syslog-ng/syslog-ng.conf
-              name: config
-              subPath: syslog-ng.conf
-          {{- if .Values.storage.enable }}
-            - mountPath: /var/log
-              name: logs
-          {{- end }}
+        - name: logrotate
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/usr/sbin/cron"
+            - "&&"
+            - "tail" 
+            - "-f"
+            - "/var/log/cronlog.log"
+          volumeMounts:
+          - mountPath: /etc/logrotate.d/logrotate.conf
+            name: logrotate-config
+            subPath: logrotate.conf
+          - mountPath: /etc/crontab
+            name: crontab-config
+            subPath: crontab
+            {{- if .Values.storage.enable }}
+          - mountPath: /var/log
+            name: logs
+            {{- end }}
         {{- end }}
-  ###      
       volumes:
       - name: config
         configMap:
           name: {{ include "syslog-ng.fullname" . }}
+      {{- if .Values.logrotate.enable }}
+      - name: logrotate-config
+        configMap:
+          name: {{ include "syslog-ng.fullname" . }}-logrotate
+      - name: crontab-config
+        configMap:
+          name: {{ include "syslog-ng.fullname" . }}-crontab
+      {{- end }}
       {{- if .Values.storage.enable }}
       - name: logs
         persistentVolumeClaim:

@@ -1,0 +1,12 @@
+{{- if .Values.logrotate.enable }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "syslog-ng.labels" . | nindent 4 }}
+  name: {{ include "syslog-ng.fullname" . }}-logrotate
+data:
+  logrotate.conf:  {{  tpl (toYaml .Values.logrotate.config) . | indent 4 }}
+  # end of crontab
+
+{{- end }}
