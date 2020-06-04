@@ -12,6 +12,7 @@ data:
        if [[ $(find "$filename" -mtime +{{ .Values.compressor.retention_days }} -print) ]]; then
          echo "$filename is older than {{ .Values.compressor.retention_days }} days, Compressing."
          tar -zcvf "$filename"-$(date +%d-%m-%y).tar.gz $filename
+         rm $filename
        else
          echo skippig $filename not older than {{ .Values.compressor.retention_days }} days.
        fi
