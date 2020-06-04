@@ -21,7 +21,7 @@ data:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: hello
+  name: {{ include "syslog-ng.fullname" . }}-compressor
 spec:
   schedule: "{{ .Values.compressor.schedule }}"
   jobTemplate:
