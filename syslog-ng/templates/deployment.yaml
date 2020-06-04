@@ -54,9 +54,12 @@ spec:
           command:
             - "/usr/sbin/cron"
             - "&&"
+            - "touch"
+            - "/var/log/state.log"
+            - "&&"
             - "tail" 
             - "-f"
-            - "/var/log/cronlog.log"
+            - "/var/log/state.log"
           volumeMounts:
           - mountPath: /etc/logrotate.d/logrotate.conf
             name: logrotate-config

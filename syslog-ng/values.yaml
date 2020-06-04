@@ -38,6 +38,7 @@ logrotate:
       rotate 24
       compress
       create
+      su root root
     }
 
 imagePullSecrets: []

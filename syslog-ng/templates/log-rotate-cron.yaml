@@ -7,6 +7,6 @@ metadata:
   name: {{ include "syslog-ng.fullname" . }}-crontab
 data:
   crontab: |
-    {{ .Values.logrotate.cron_frecuency }} /usr/sbin/logrotate --state /var/log/cronlog.log
+    {{ .Values.logrotate.cron_frecuency }} /usr/sbin/logrotate /etc/logrotate.d/logrotate.conf --state /var/log/state.log -v
   #end
 {{- end }}
