@@ -1,10 +1,7 @@
 apiVersion: v2
 name: syslog-ng
 description: Syslog-ng
-
-
-version: 0.1
-
+version: 0.2
 appVersion: 3.27.1
 maintainers:
   - name: zakkg3
